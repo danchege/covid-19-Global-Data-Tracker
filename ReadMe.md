@@ -77,8 +77,9 @@ The following files are generated:
 - **Cleaned Data**:
   - `covid_analysis_results.csv`
 - **Output examples**:
-![daily_new_case](/daily_new_cases.png)  
-![total_cases](/total_cases_over_time.png)
+![daily_new_case](images/daily_new_cases.png)  
+![total_cases](images/total_cases_over_time.png)
+![code_results](images/code%20results.png)
 
 ---
 
