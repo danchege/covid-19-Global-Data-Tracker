@@ -137,8 +137,8 @@ def create_vaccination_dashboard(df):
 # 5. INSIGHT GENERATION
 
 
-def generate_insights(df):
-    """Generate key insights from the data"""
+def generate_insights(df, save_path=None):
+    """Generate key insights from the data and optionally save them to a file"""
     latest = df[df['date'] == df['date'].max()]
     
     # Top countries analysis
@@ -149,13 +149,25 @@ def generate_insights(df):
     # Mortality analysis
     high_mortality = latest[latest['total_cases'] > 1e6].nlargest(3, 'mortality_rate')
     
-    print("\n🔎 KEY INSIGHTS:")
-    print(f"1. Countries with most cases: {', '.join(top_cases)}")
-    print(f"2. Countries with most deaths: {', '.join(top_deaths)}")
-    print(f"3. Countries with highest vaccination rates: {', '.join(top_vaccinated)}")
-    print("\n4. Highest mortality rates among major countries:")
+    # Prepare insights
+    insights = []
+    insights.append("\n🔎 KEY INSIGHTS:")
+    insights.append(f"1. Countries with most cases: {', '.join(top_cases)}")
+    insights.append(f"2. Countries with most deaths: {', '.join(top_deaths)}")
+    insights.append(f"3. Countries with highest vaccination rates: {', '.join(top_vaccinated)}")
+    insights.append("\n4. Highest mortality rates among major countries:")
     for _, row in high_mortality.iterrows():
-        print(f"   - {row['location']}: {row['mortality_rate']:.2%}")
+        insights.append(f"   - {row['location']}: {row['mortality_rate']:.2%}")
+    
+    # Print insights to console
+    for line in insights:
+        print(line)
+    
+    # Save insights to a file if a save path is provided
+    if save_path:
+        with open(save_path, 'w') as file:
+            file.write('\n'.join(insights))
+        print(f"\n💾 Insights saved to '{save_path}'")
 
 
 # 6. MAIN EXECUTION
@@ -184,8 +196,8 @@ def main():
     create_interactive_map(df_clean, 'cases_per_million', 'Global COVID-19 Cases per Million', save_path='cases_per_million_map.html')
     create_interactive_map(df_clean, 'deaths_per_million', 'Global COVID-19 Deaths per Million', save_path='deaths_per_million_map.html')
     
-    # Generate insights
-    generate_insights(df_clean)
+    # Generate insights and save them to a file
+    generate_insights(df_clean, save_path='insights.txt')
     
     # Save cleaned data
     df_clean.to_csv('covid_analysis_results.csv', index=False)
